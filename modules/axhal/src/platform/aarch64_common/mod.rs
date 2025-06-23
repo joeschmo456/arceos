@@ -1,6 +1,6 @@
 mod boot;
-
 pub mod generic_timer;
+pub mod pl061;
 #[cfg(not(platform_family = "aarch64-raspi"))]
 pub mod psci;
 
