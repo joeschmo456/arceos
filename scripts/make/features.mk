@@ -52,6 +52,10 @@ ifeq ($(shell test $(SMP) -gt 1; echo $$?),0)
   lib_feat += smp
 endif
 
+ifeq ($(GICV3),y)
+  ax_feat += gicv3
+endif
+
 ax_feat += $(filter-out $(lib_features),$(FEATURES))
 lib_feat += $(filter $(lib_features),$(FEATURES))
 

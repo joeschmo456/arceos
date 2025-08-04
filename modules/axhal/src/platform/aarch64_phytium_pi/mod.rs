@@ -1,7 +1,8 @@
 pub mod mem;
-
 #[cfg(feature = "smp")]
 pub mod mp;
+pub mod watchdog;
+pub mod wdt_driver;
 
 #[cfg(feature = "irq")]
 pub mod irq {
@@ -57,6 +58,9 @@ pub fn platform_init() {
     super::aarch64_common::gic::init_primary();
     super::aarch64_common::generic_timer::init_percpu();
     super::aarch64_common::pl011::init();
+    info!("watchdog_example");
+    wdt_driver::watchdog_example();
+    info!("watchdog_example end");
 }
 
 /// Initializes the platform devices for secondary CPUs.

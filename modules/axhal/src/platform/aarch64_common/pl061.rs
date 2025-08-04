@@ -1,10 +1,10 @@
-use memory_addr::PhysAddr;
-use tock_registers::{
-    registers::{ReadOnly, ReadWrite, WriteOnly},
-    register_bitfields, register_structs,
-};
-use tock_registers::interfaces::{Readable, Writeable};
 use crate::platform::aarch64_common::psci::system_off as terminate;
+use memory_addr::PhysAddr;
+use tock_registers::interfaces::{Readable, Writeable};
+use tock_registers::{
+    register_bitfields, register_structs,
+    registers::{ReadOnly, ReadWrite, WriteOnly},
+};
 
 use crate::mem::phys_to_virt;
 use core::arch::asm;
@@ -122,7 +122,7 @@ register_bitfields! [
 
     GPIOIEV [
         Pin0 OFFSET(0) NUMBITS(1) [
-            FallingLow = 0,  
+            FallingLow = 0,
             RisingHigh = 1,
         ],
         Pin1 OFFSET(1) NUMBITS(1) [
@@ -259,7 +259,6 @@ register_bitfields! [
     ],
 ];
 
-
 register_structs! {
     pub PL061Regs {
         (0x000 => data: [ReadWrite<u32>; 256]),
@@ -298,7 +297,7 @@ fn handle() {
 
     gpio_regs.ie.write(GPIOIE::Pin3::CLEAR);
     gpio_regs.ic.set(gpio_regs.ie.get());
-    
+
     // 关机
     info!("GPIO poweroff");
     unsafe {
