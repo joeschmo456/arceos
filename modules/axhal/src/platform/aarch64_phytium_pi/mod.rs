@@ -3,6 +3,8 @@ pub mod mem;
 pub mod mp;
 pub mod watchdog;
 pub mod wdt_driver;
+pub mod uart;
+pub mod uart_driver;
 
 #[cfg(feature = "irq")]
 pub mod irq {
@@ -11,6 +13,7 @@ pub mod irq {
 
 pub mod console {
     pub use crate::platform::aarch64_common::pl011::*;
+    pub use crate::platform::aarch64_phytium_pi::uart::*;
 }
 
 pub mod time {
@@ -58,8 +61,9 @@ pub fn platform_init() {
     super::aarch64_common::gic::init_primary();
     super::aarch64_common::generic_timer::init_percpu();
     super::aarch64_common::pl011::init();
-    wdt_driver::watchdog_example();
-    info!("watchdog_example end");
+    // wdt_driver::watchdog_example();
+    // info!("watchdog_example end");
+    uart_driver::uart_example();
 }
 
 /// Initializes the platform devices for secondary CPUs.
