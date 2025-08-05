@@ -1,6 +1,6 @@
 use super::watchdog::*;
-use crate::platform::aarch64_common::gic::{WATCHDOG_IRQ_NUM, register_handler};
 use crate::mem::phys_to_virt;
+use crate::platform::aarch64_common::gic::{WATCHDOG_IRQ_NUM, register_handler};
 use ::memory_addr::PhysAddr;
 use kspin::SpinNoIrq;
 
@@ -13,7 +13,6 @@ pub fn watchdog_example() {
     crate::irq::set_enable(WATCHDOG_IRQ_NUM, true);
     register_handler(WATCHDOG_IRQ_NUM, handle_wdt_irq);
 
-   
     WATCHDOG.lock().init_watchdog();
     info!("Watchdog initialized");
 

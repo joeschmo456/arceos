@@ -10,6 +10,6 @@ pub fn uart_example() {
         let recv = UART.lock().recv();
         info!("UART received: {}", recv);
         //core::hint::spin_loop();
-    } 
+    }
     info!("UART example end");
 }

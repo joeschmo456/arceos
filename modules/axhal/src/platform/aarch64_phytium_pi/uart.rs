@@ -2,9 +2,9 @@ use crate::mem::{PhysAddr, phys_to_virt};
 use core::ptr::NonNull;
 use kspin::SpinNoIrq;
 use tock_registers::{
-    registers::ReadWrite,
-    register_bitfields, register_structs,
     interfaces::{Readable, Writeable},
+    register_bitfields, register_structs,
+    registers::ReadWrite,
 };
 
 pub const BAUD_RATE: u32 = 115200;
@@ -13,10 +13,7 @@ pub const CLOCK_HZ: u32 = 100_000_000;
 // UART2 base address
 pub const UART_BASE: PhysAddr = pa!(0x2800_E000);
 
-
-pub static UART: SpinNoIrq<Uart> = 
-    SpinNoIrq::new(Uart::new(phys_to_virt(UART_BASE).as_mut_ptr()));
-
+pub static UART: SpinNoIrq<Uart> = SpinNoIrq::new(Uart::new(phys_to_virt(UART_BASE).as_mut_ptr()));
 
 register_structs! {
     UartRegs {
@@ -39,7 +36,6 @@ register_structs! {
         (0x04C => @END),
     }
 }
-
 
 register_bitfields![u32,
     pub UARTDR [
@@ -126,7 +122,7 @@ register_bitfields![u32,
         bemis OFFSET(9) NUMBITS(1) [], // 帧错误中断掩码
         oemis OFFSET(10) NUMBITS(1) []  // 溢出错误中断掩码
     ],
-    
+
     pub UARTICR [
         rxim OFFSET(4) NUMBITS(1) [], // 清除接收中断
         txim OFFSET(5) NUMBITS(1) [], // 清除发送中断
@@ -169,7 +165,8 @@ impl Uart {
         // 配置波特率
         // let interger = CLOCK_HZ / BAUD_RATE;
         let integer = CLOCK_HZ / (16 * BAUD_RATE) as u32;
-        let fraction = (((CLOCK_HZ % (16 * BAUD_RATE)) * 64 + (16 * BAUD_RATE) / 2 ) / (16 * BAUD_RATE)) as u32;
+        let fraction =
+            (((CLOCK_HZ % (16 * BAUD_RATE)) * 64 + (16 * BAUD_RATE) / 2) / (16 * BAUD_RATE)) as u32;
         // 写入波特率寄存器
         self.regs().uartibrd.set(integer);
         self.regs().uartfbrd.set(fraction);
@@ -182,7 +179,7 @@ impl Uart {
 
         // 使能 UART，使能发送和接受数据
         self.regs().uartcr.write(
-              UARTCR::uarten::SET
+            UARTCR::uarten::SET
                 + UARTCR::txe::SET
                 + UARTCR::rxe::SET
                 + UARTCR::dtr::SET
@@ -193,12 +190,12 @@ impl Uart {
     // 发送数据
     pub fn send(&self, data: u8) {
         // 等待 TxFIFO 不满
-        if self.regs().uartfr.read(UARTFR::txff) == 0 {
-           info!("Tx FIFO is not full!");
+        if self.regs().uartfr.read(UARTFR::txff) == 1 {
+            info!("Tx FIFO is full!");
+            return;
         }
         // 写入数据
         self.regs().uartdr.write(UARTDR::data.val(data as u32));
-        info!("Actual sent data: {:x}", data);
     }
 
     // 接收数据

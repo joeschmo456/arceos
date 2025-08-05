@@ -1,10 +1,10 @@
 pub mod mem;
 #[cfg(feature = "smp")]
 pub mod mp;
-pub mod watchdog;
-pub mod wdt_driver;
 pub mod uart;
 pub mod uart_driver;
+pub mod watchdog;
+pub mod wdt_driver;
 
 #[cfg(feature = "irq")]
 pub mod irq {
